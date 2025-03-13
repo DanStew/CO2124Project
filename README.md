@@ -33,9 +33,9 @@ Export as JSON and place in resources folder
 
 ## Marking Criteria : 
 
-ALL required endpoints have been correctly documented in the spec
-ALL required endpoints have been implemented and run as expected, matching perfectly the documentation
-Postman Collection contains one successful and error test case for each endpoint, all tests execute correctly
+- ALL required endpoints have been correctly documented in the spec
+- ALL required endpoints have been implemented and run as expected, matching perfectly the documentation
+- Postman Collection contains one successful and error test case for each endpoint, all tests execute correctly
 
 
 
@@ -67,7 +67,7 @@ More information about the specific implementation of each can be found on the d
 
 ## Marking Criteria : 
 
-ALL required features have been implemented correctly
-Application is well designed, with clean and intuitive user interface
-The code is efficient, well-structured and follows best practises
-Well-organised code is very important (80%), inefficiency not so much (only needed for 100%)
+- ALL required features have been implemented correctly
+- Application is well designed, with clean and intuitive user interface
+- The code is efficient, well-structured and follows best practises
+- Well-organised code is very important (80%), inefficiency not so much (only needed for 100%)
