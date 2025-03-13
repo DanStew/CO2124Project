@@ -2,26 +2,47 @@ package com.example.part1.domain;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table
 public class Appointments {
+    //Attributes for the Appointments entity
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-    private String name;
+    private long id;
+    private Timestamp appointmentDate;
+    private String status;
+    private String notes;
+    //Adding the additional relationships that occur
 
-    public int getId() {
-        return id;
-    }
+    //A Doctor can have Many appointments, each appointment only has one doctor
+    @ManyToOne
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private Doctor doctor;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    //A Patient can have Many appointments, each appointment only has one patient
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
-    public String getName() {
-        return name;
-    }
+    //An appointmnet has a medicalRecord
+    //Also includes fact that if you delete the appointment,you delete the associated record
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    private Record medicalRecord;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    //Getters and Setters for the attributes
+    public long getId() {return id;}
+    public void setId(long id) {this.id = id;}
+    public Timestamp getAppointmentDate() {return appointmentDate;}
+    public void setAppointmentDate(Timestamp appointmentDate) {this.appointmentDate = appointmentDate;}
+    public String getStatus() {return status;}
+    public void setStatus(String status) {this.status = status;}
+    public String getNotes() {return notes;}
+    public void setNotes(String notes) {this.notes = notes;}
+    public Doctor getDoctor() {return doctor;}
+    public void setDoctor(Doctor doctor) {this.doctor = doctor;}
+    public Patient getPatient() {return patient;}
+    public void setPatient(Patient patient) {this.patient = patient;}
+    public Record getMedicalRecord() {return medicalRecord;}
+    public void setMedicalRecord(Record medicalRecord) {this.medicalRecord = medicalRecord;}
 }
