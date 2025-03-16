@@ -79,7 +79,7 @@ public class Part1Application implements CommandLineRunner {
 
 		Record medicalRecord2 = new Record();
 		medicalRecord2.setDiagnosis("Bad");
-		medicalRecord2.setNotes("Good kecord notes");
+		medicalRecord2.setNotes("Good record notes");
 		medicalRecord2.setRecordDate(new Timestamp(System.currentTimeMillis()));
 		medicalRecord2.setTreatment("No Treatment");
 		medicalRecord2.setPatient(patient1);

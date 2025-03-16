@@ -16,6 +16,8 @@ public class Patient {
     String address;
     @OneToMany(mappedBy = "patient", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     List<Appointments> appointmentsList = new ArrayList<>();
+
+
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Record> medicalRecords = new ArrayList<>();
 
@@ -73,5 +75,12 @@ public class Patient {
     public List<Appointments> getAppointmentsList() {return appointmentsList;}
 
     public void setAppointmentsList(List<Appointments> appointmentsList) {}
+    public List<Record> getMedicalRecords() {
+        return medicalRecords;
+    }
+
+    public void setMedicalRecords(List<Record> medicalRecords) {
+        this.medicalRecords = medicalRecords;
+    }
 
 }
