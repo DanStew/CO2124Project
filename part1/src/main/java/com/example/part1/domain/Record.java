@@ -8,18 +8,15 @@ import java.sql.Timestamp;
 @Table
 public class Record {
     //The attributes for the MedicalRecord entity
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private Timestamp recordDate;
     private String diagnosis;
     private String treatment;
     private String notes;
-
-    //Storing the appointment this record is attached to
-    //There must be an appointment and each appointment can only have one record
-    @OneToOne
-    @JoinColumn(name = "appointment_id", nullable = false, unique = true)
-    private Appointments appointment;
+    @ManyToOne()
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
     //Getters and setter for the attributes
     public long getId() {return id;}
@@ -32,6 +29,6 @@ public class Record {
     public void setTreatment(String treatment) {this.treatment = treatment;}
     public String getNotes() {return notes;}
     public void setNotes(String notes) {this.notes = notes;}
-    public Appointments getAppointment() {return appointment;}
-    public void setAppointment(Appointments appointment) {this.appointment = appointment;}
+    public Patient getPatient() {return patient;}
+    public void setPatient(Patient patient) {this.patient = patient;}
 }

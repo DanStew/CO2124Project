@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 public class Doctor {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;    // unique identifier for a doctor
     public String name;    // the doctor's full name, e.g., "Dr. Kehinde"
     public String specialisation;  // the doctor's specialisation (e.g., "Cardiology", "Neurology")

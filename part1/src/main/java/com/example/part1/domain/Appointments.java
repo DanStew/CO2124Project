@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Table
 public class Appointments {
     //Attributes for the Appointments entity
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private Timestamp appointmentDate;
     private String status;
@@ -25,9 +25,7 @@ public class Appointments {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    //An appointmnet has a medicalRecord
-    //Also includes fact that if you delete the appointment,you delete the associated record
-    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Record medicalRecord;
 
     //Getters and Setters for the attributes

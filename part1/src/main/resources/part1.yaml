@@ -4,6 +4,6 @@ info:
   description: part1
   version: 1.0.0
 servers:
-  - url: 'https'
+  - url: 'http'
 paths:
   
