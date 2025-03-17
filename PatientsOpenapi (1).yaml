@@ -1,0 +1,252 @@
+openapi: 3.0.3
+info:
+  title: Patient Management API
+  description: A REST API for managing patients, their appointments, and medical records.
+  version: 1.0.0
+
+paths:
+  /api/patients:
+    get:
+      summary: Get All Patients
+      description: Retrieves all the patients in the system.
+      responses:
+        '200':
+          description: A list of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Patient'
+
+    post:
+      summary: Create a New Patient
+      description: Creates a new patient in the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '201':
+          description: Patient created successfully
+          headers:
+            Location:
+              description: The location of the newly created patient
+              schema:
+                type: string
+                example: /api/patients/1
+        '409':
+          description: Patient already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/patients/{id}:
+    get:
+      summary: Get Patient by ID
+      description: Retrieves a patient by their ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the patient to retrieve
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Patient found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '404':
+          description: Patient not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Update Patient
+      description: Updates an existing patient's details.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the patient to update
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '200':
+          description: Patient updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '404':
+          description: Patient not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Delete Patient
+      description: Deletes a patient by their ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the patient to delete
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: Patient deleted successfully
+        '404':
+          description: Patient not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/patients/{id}/appointments:
+    get:
+      summary: Get Patient's Appointments
+      description: Retrieves a list of appointments for a specific patient.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the patient whose appointments to retrieve
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: A list of appointments for the patient
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Patient's appointments not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '204':
+          description: No appointments found
+
+  /api/patients/{id}/medical-records:
+    get:
+      summary: Get Patient's Medical Records
+      description: Retrieves a list of medical records for a specific patient.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the patient whose medical records to retrieve
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: A list of medical records for the patient
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MedicalRecord'
+        '404':
+          description: Patient not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '204':
+          description: No medical records found
+
+components:
+  schemas:
+    Patient:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        address:
+          type: string
+        appointmentsList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+        medicalRecords:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicalRecord'
+
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+        appointmentDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+        notes:
+          type: string
+        doctor:
+          type: object
+          properties:
+            id:
+              type: number
+              format: int64
+            name:
+              type: string
+
+    MedicalRecord:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+        recordDate:
+          type: string
+          format: date-time
+        diagnosis:
+          type: string
+        treatment:
+          type: string
+        notes:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
