@@ -2,6 +2,7 @@ package com.example.part1.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ public class Doctor {
     public String email;   // the doctor's email address
     public String phoneNumber;     // the doctor's phone number
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-    List<Appointments> appointmentsList;
+    List<Appointments> appointmentsList = new ArrayList<>();
     // All doctor entity attributes
 
     public Doctor(Long id, String name, String specialisation, String email, String phoneNumber){
@@ -55,6 +56,12 @@ public class Doctor {
     }
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    public List<Appointments> getAppointmentsList() {
+        return appointmentsList;
+    }
+    public void setAppointmentsList(List<Appointments> appointmentsList) {
+        this.appointmentsList = appointmentsList;
     }
     // Getters and setters for the Doctor attributes
 
