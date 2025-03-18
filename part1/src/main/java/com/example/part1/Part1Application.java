@@ -38,7 +38,6 @@ public class Part1Application implements CommandLineRunner {
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
-		String s = """
 						//Creating a patient
 								Patient patient1 = new Patient();
 								patient1.setName("John");
@@ -104,6 +103,5 @@ public class Part1Application implements CommandLineRunner {
 								appointments2.setNotes("No Notes");
 								appointments2.setStatus("Good");
 								appointmentsRepo.save(appointments2);
-				""";
 	}
 }

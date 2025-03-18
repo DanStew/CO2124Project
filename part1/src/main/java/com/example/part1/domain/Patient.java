@@ -1,5 +1,9 @@
 package com.example.part1.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -9,13 +13,13 @@ import java.util.List;
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
-    String email;
-    String phoneNumber;
-    String address;
+    private Long id;
+    private String name;
+    private String email;
+    private String phoneNumber;
+    private String address;
     @OneToMany(mappedBy = "patient", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-    List<Appointments> appointmentsList = new ArrayList<>();
+    private List<Appointments> appointmentsList = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)

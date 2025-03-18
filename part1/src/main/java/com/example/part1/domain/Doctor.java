@@ -1,5 +1,9 @@
 package com.example.part1.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,13 +12,13 @@ import java.util.List;
 @Entity
 public class Doctor {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;    // unique identifier for a doctor
-    public String name;    // the doctor's full name, e.g., "Dr. Kehinde"
-    public String specialisation;  // the doctor's specialisation (e.g., "Cardiology", "Neurology")
-    public String email;   // the doctor's email address
-    public String phoneNumber;     // the doctor's phone number
+    private Long id;    // unique identifier for a doctor
+    private String name;    // the doctor's full name, e.g., "Dr. Kehinde"
+    private String specialisation;  // the doctor's specialisation (e.g., "Cardiology", "Neurology")
+    private String email;   // the doctor's email address
+    private String phoneNumber;     // the doctor's phone number
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-    List<Appointments> appointmentsList = new ArrayList<>();
+    private List<Appointments> appointmentsList = new ArrayList<>();
     // All doctor entity attributes
 
     public Doctor(Long id, String name, String specialisation, String email, String phoneNumber){

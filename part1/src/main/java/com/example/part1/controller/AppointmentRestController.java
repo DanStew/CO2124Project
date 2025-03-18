@@ -3,7 +3,10 @@ package com.example.part1.controller;
 import com.example.part1.domain.Appointments;
 import com.example.part1.domain.ErrorInfo;
 import com.example.part1.domain.Record;
+import com.example.part1.dtos.AppointmentsDto;
 import com.example.part1.repo.AppointmentsRepo;
+import com.example.part1.service.AppointmentsService;
+import com.example.part1.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,22 +15,36 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 public class AppointmentRestController {
 
     @Autowired
     private AppointmentsRepo appointmentsRepo;
+
+    @Autowired
+    private AppointmentsService appointmentsService;
+
+    @Autowired
+    private RecordService recordService;
 
     //Function to get all of the appointments
     @GetMapping("/appointments")
     public ResponseEntity<?> appointments(Model model) {
         List<Appointments> appointments = appointmentsRepo.findAll();
 
+        List<AppointmentsDto> appointmentsDtos = new ArrayList<>();
+
+        for (Appointments appointment: appointments) {
+            appointmentsDtos.add(appointmentsService.convertToAppointmentDto(appointment));
+        }
+
         return appointments.isEmpty() ?   ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("No Appointments found"))
-                : ResponseEntity.ok(appointments);
+                : ResponseEntity.ok(appointmentsDtos);
     }
 
     //Function to create a new appointment
@@ -46,7 +63,7 @@ public class AppointmentRestController {
     @GetMapping("appointments/{id}")
     public ResponseEntity<?> getAppointment(@PathVariable Long id) {
         Optional<Appointments> appointments = appointmentsRepo.findById(id);
-        return appointments.isPresent() ? ResponseEntity.ok(appointments.get())
+        return appointments.isPresent() ? ResponseEntity.ok(appointmentsService.convertToAppointmentDto(appointments.get()))
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Appointment " + id + " not found"));
     }
 
@@ -66,7 +83,7 @@ public class AppointmentRestController {
         currentAppointment.setPatient(appointments.getPatient());
         currentAppointment.setMedicalRecord(appointments.getMedicalRecord());
         appointmentsRepo.save(currentAppointment);
-        return ResponseEntity.ok(appointments);
+        return ResponseEntity.ok(appointmentsService.convertToAppointmentDto(appointments));
     }
 
     //Function to delete an appointment by a specific id
@@ -91,6 +108,6 @@ public class AppointmentRestController {
         if(medicalRecord == null){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No medical record found");
         }
-        return ResponseEntity.ok(medicalRecord);
+        return ResponseEntity.ok(recordService.convertToRecordDto(medicalRecord));
     }
 }

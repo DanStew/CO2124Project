@@ -1,45 +1,57 @@
 package com.example.part1.controller;
 
-import com.example.part1.domain.Appointments;
-import com.example.part1.domain.Patient;
+import com.example.part1.domain.*;
 import com.example.part1.domain.Record;
-import com.example.part1.repo.AppointmentsRepo;
-import com.example.part1.repo.DoctorRepo;
+import com.example.part1.dtos.AppointmentsDto;
+import com.example.part1.dtos.PatientDto;
+import com.example.part1.dtos.RecordDto;
 import com.example.part1.repo.PatientRepo;
-import com.example.part1.domain.ErrorInfo;
+import com.example.part1.service.AppointmentsService;
+import com.example.part1.service.PatientService;
+import com.example.part1.service.RecordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-
 public class PatientRestController {
 
     private final PatientRepo patientRepo;
-    private final AppointmentsRepo appointmentsRepo;
-    private final DoctorRepo doctorRepo;
 
-    public PatientRestController(PatientRepo patientRepo, AppointmentsRepo appointmentsRepo, DoctorRepo doctorRepo) {
+    @Autowired
+    private PatientService patientService;
+
+    @Autowired
+    private AppointmentsService appointmentsService;
+
+    @Autowired
+    private RecordService recordService;
+
+    public PatientRestController(PatientRepo patientRepo) {
         this.patientRepo = patientRepo;
-        this.appointmentsRepo = appointmentsRepo;
-        this.doctorRepo = doctorRepo;
     }
 
     @GetMapping("/patients")
     public ResponseEntity<?> patients(Model model) {
         List<Patient> patients = patientRepo.findAll();
 
+        List<PatientDto> patientDtos = new ArrayList<>();
+
+        for (Patient patient : patients) {
+            patientDtos.add(patientService.convertToPatientDto(patient));
+        }
+
         return patients.isEmpty() ?   ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ErrorInfo("No Patients found"))
-                : ResponseEntity.ok(patients);
+                : ResponseEntity.ok(patientDtos);
 
     }
     @PostMapping("patients")
@@ -55,7 +67,7 @@ public class PatientRestController {
     @GetMapping("patients/{id}")
     public ResponseEntity<?> getPatient(@PathVariable Long id) {
         Optional<Patient> patient = patientRepo.findById(id);
-        return patient.isPresent() ? ResponseEntity.ok(patient.get())
+        return patient.isPresent() ? ResponseEntity.ok(patientService.convertToPatientDto(patient.get()))
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Patient " + id + " not found"));
     }
     @PutMapping("patients/{id}")
@@ -71,7 +83,7 @@ public class PatientRestController {
         currentPatient.setPhoneNumber(patient.getPhoneNumber());
         currentPatient.setAppointmentsList(patient.getAppointmentsList());
         patientRepo.save(currentPatient);
-        return ResponseEntity.ok(patient);
+        return ResponseEntity.ok(patientService.convertToPatientDto(patient));
 
     }
     @DeleteMapping("patients/{id}")
@@ -101,7 +113,14 @@ public class PatientRestController {
                     .body("No Appointments found");
         }
 
-        return ResponseEntity.ok(appointments);
+        //Converting the appointments to appointmentDtos
+        List<AppointmentsDto> appointmentsDtos = new ArrayList<>();
+
+        for( Appointments appointment : appointments){
+            appointmentsDtos.add(appointmentsService.convertToAppointmentDto(appointment));
+        }
+
+        return ResponseEntity.ok(appointmentsDtos);
     }
     @GetMapping("patients/{id}/medical-records")
     public ResponseEntity<?> getPatientMedicalRecords(@PathVariable Long id) {
@@ -113,7 +132,15 @@ public class PatientRestController {
         if(medicalRecords.isEmpty()){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No medical records found");
         }
-        return ResponseEntity.ok(medicalRecords);
+
+        //Converting the Records to a list of RecordDtos
+        List<RecordDto> recordDtos = new ArrayList<>();
+
+        for (Record record : medicalRecords){
+            recordDtos.add(recordService.convertToRecordDto(record));
+        }
+
+        return ResponseEntity.ok(recordDtos);
     }
 
 

@@ -3,39 +3,50 @@ package com.example.part1.controller;
 import com.example.part1.domain.Appointments;
 import com.example.part1.domain.Doctor;
 import com.example.part1.domain.ErrorInfo;
+import com.example.part1.dtos.AppointmentsDto;
+import com.example.part1.dtos.DoctorDto;
+import com.example.part1.service.AppointmentsService;
+import com.example.part1.service.DoctorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import com.example.part1.repo.AppointmentsRepo;
 import com.example.part1.repo.DoctorRepo;
-import com.example.part1.repo.PatientRepo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-
 public class DoctorRestController {
 
     private final DoctorRepo doctorRepo;
-    private final AppointmentsRepo appointmentsRepo;
-    private final PatientRepo patientRepo;
 
-    public DoctorRestController(DoctorRepo doctorRepo, AppointmentsRepo appointmentsRepo, PatientRepo patientRepo) {
+    @Autowired
+    private DoctorService doctorService;
+
+    @Autowired
+    private AppointmentsService appointmentsService;
+
+    public DoctorRestController(DoctorRepo doctorRepo) {
         this.doctorRepo = doctorRepo;
-        this.appointmentsRepo = appointmentsRepo;
-        this.patientRepo = patientRepo;
     }
 
     @GetMapping("/doctors")
     public ResponseEntity<?> doctors() {
         List<Doctor> doctors = doctorRepo.findAll();
 
+        List<DoctorDto> doctorDtos = new ArrayList<>();
+
+        for (Doctor doctor: doctors) {
+            doctorDtos.add(doctorService.convertToDoctorDto(doctor));
+        }
+
         return doctors.isEmpty() ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ErrorInfo("No Doctors found"))
-                : ResponseEntity.ok(doctors);
+                : ResponseEntity.ok(doctorDtos);
     }
 
     @PostMapping("doctors")
@@ -52,7 +63,7 @@ public class DoctorRestController {
     @GetMapping("doctors/{id}")
     public ResponseEntity<?> getDoctor(@PathVariable Long id) {
         Optional<Doctor> doctor = doctorRepo.findById(id);
-        return doctor.isPresent() ? ResponseEntity.ok(doctor.get())
+        return doctor.isPresent() ? ResponseEntity.ok(doctorService.convertToDoctorDto(doctor.get()))
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Doctor " + id + " not found"));
     }
 
@@ -69,7 +80,7 @@ public class DoctorRestController {
         currentDoctor.setPhoneNumber(doctor.getPhoneNumber());
         currentDoctor.setAppointmentsList(doctor.getAppointmentsList());
         doctorRepo.save(currentDoctor);
-        return ResponseEntity.ok(doctor);
+        return ResponseEntity.ok(doctorService.convertToDoctorDto(doctor));
     }
 
     @DeleteMapping("doctor/{id}")
@@ -94,7 +105,15 @@ public class DoctorRestController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body("No Appointments found");
         }
-        return ResponseEntity.ok(appointments);
+
+        //Turning appointments into a list of appointmentDtos
+        List<AppointmentsDto> appointmentsDtos = new ArrayList<>();
+
+        for (Appointments appointment: appointments) {
+            appointmentsDtos.add(appointmentsService.convertToAppointmentDto(appointment));
+        }
+
+        return ResponseEntity.ok(appointmentsDtos);
     }
 
 }

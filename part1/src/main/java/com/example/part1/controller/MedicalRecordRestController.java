@@ -1,9 +1,9 @@
 package com.example.part1.controller;
 
-import com.example.part1.domain.Appointments;
 import com.example.part1.domain.ErrorInfo;
 import com.example.part1.domain.Record;
 import com.example.part1.repo.RecordRepo;
+import com.example.part1.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,10 +14,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 public class MedicalRecordRestController {
 
     @Autowired
     private RecordRepo recordRepo;
+
+    @Autowired
+    private RecordService recordService;
 
     //Function to create a new medical record
     @PostMapping("/medical-records")
@@ -35,7 +39,7 @@ public class MedicalRecordRestController {
     @GetMapping("medical-records/{id}")
     public ResponseEntity<?> getMedicalRecord(@PathVariable Long id) {
         Optional<Record> optionalMedicalRecord = recordRepo.findById(id);
-        return optionalMedicalRecord.isPresent() ? ResponseEntity.ok(optionalMedicalRecord.get())
+        return optionalMedicalRecord.isPresent() ? ResponseEntity.ok(recordService.convertToRecordDto(optionalMedicalRecord.get()))
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Medical Record " + id + " not found"));
     }
 }
