@@ -7,17 +7,188 @@
 	},
 	"item": [
 		{
-			"name": "Get Appointments - Error",
+			"name": "Make Patient - Success",
 			"request": {
-				"method": "GET",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"johndoe@example.com\",\r\n    \"phoneNumber\": \"1234567890\",\r\n    \"address\": \"123 Main Street, City, Country\",\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/appointments",
+					"raw": "localhost:8080/api/patients",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
+						"patients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make Patient - Error",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\" : 1,\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"johndoe@example.com\",\r\n    \"phoneNumber\": \"1234567890\",\r\n    \"address\": \"123 Main Street, City, Country\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/patients",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"patients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make Doctor - Success",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"specialisation\" : \"Cardiology\",\r\n    \"email\" : \"johndoe@example.com\",\r\n    \"phoneNumber\": \"1234567890\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/doctors",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"doctors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make Doctor - Error",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\" : 1,\r\n    \"name\": \"John Doe\",\r\n    \"specialisation\" : \"Cardiology\",\r\n    \"email\" : \"johndoe@example.com\",\r\n    \"phoneNumber\": \"1234567890\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/doctors",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"doctors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Appointments - Error",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/appointments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make Appointment - Success",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"appointmentDate\": \"2025-04-01T10:00:00.000Z\",\r\n    \"status\": \"Scheduled\",\r\n    \"notes\": \"Follow-up appointment\",\r\n    \"doctorId\": 1,\r\n    \"patientId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/appointments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
 						"appointments"
 					]
 				}

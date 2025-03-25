@@ -29,6 +29,17 @@ public class Appointments {
     @OneToOne(cascade = CascadeType.ALL)
     private Record medicalRecord;
 
+    //Constructor to allow you make an appointment object
+    public Appointments(long id, Timestamp appointmentDate, String status, String notes, Doctor doctor, Patient patient, Record record) {
+        this.id = id;
+        this.appointmentDate = appointmentDate;
+        this.status = status;
+        this.notes = notes;
+        this.doctor = doctor;
+        this.patient = patient;
+        this.medicalRecord = record;
+    }
+
     //Getters and Setters for the attributes
     public long getId() {return id;}
     public void setId(long id) {this.id = id;}

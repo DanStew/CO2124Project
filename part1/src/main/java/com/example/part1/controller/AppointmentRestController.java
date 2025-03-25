@@ -2,9 +2,13 @@ package com.example.part1.controller;
 
 import com.example.part1.domain.Appointments;
 import com.example.part1.domain.ErrorInfo;
+import com.example.part1.domain.Patient;
 import com.example.part1.domain.Record;
 import com.example.part1.dtos.AppointmentsDto;
 import com.example.part1.repo.AppointmentsRepo;
+import com.example.part1.repo.DoctorRepo;
+import com.example.part1.repo.PatientRepo;
+import com.example.part1.repo.RecordRepo;
 import com.example.part1.service.AppointmentsService;
 import com.example.part1.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,15 @@ public class AppointmentRestController {
     @Autowired
     private RecordService recordService;
 
+    @Autowired
+    private RecordRepo recordRepo;
+
+    @Autowired
+    private PatientRepo patientRepo;
+
+    @Autowired
+    private DoctorRepo doctorRepo;
+
     //Function to get all of the appointments
     @GetMapping("/appointments")
     public ResponseEntity<?> appointments(Model model) {
@@ -49,11 +62,26 @@ public class AppointmentRestController {
 
     //Function to create a new appointment
     @PostMapping("/appointments")
-    public ResponseEntity<?> newAppointment(@RequestBody Appointments appointments, UriComponentsBuilder ucBuilder) {
-        if(appointmentsRepo.existsById(appointments.getId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Appointment " + appointments.getId() + " already exists"));
+    public ResponseEntity<?> newAppointment(@RequestBody AppointmentsDto appointmentsDto, UriComponentsBuilder ucBuilder) {
+        //If the appointment id already exists in the db
+        if(appointmentsRepo.existsById(appointmentsDto.getId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Appointment " + appointmentsDto.getId() + " already exists"));
         }
-        appointmentsRepo.save(appointments);
+        //If the doctor id doesn't exist in the db, return error
+        if(!doctorRepo.existsById(appointmentsDto.getDoctorId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Doctor " + appointmentsDto.getDoctorId() + " doesn't exists"));
+        }
+        //If the patient id doesn't exist in the db, return error
+        if(!patientRepo.existsById(appointmentsDto.getPatientId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Patient " + appointmentsDto.getPatientId() + " doesn't exists"));
+        }
+        //If the record id doesn't exist in the db, return error
+        if(appointmentsDto.getRecordId() != null && !recordRepo.existsById(appointmentsDto.getRecordId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Record " + appointmentsDto.getRecordId() + " doesn't exists"));
+        }
+        //If all the ids exist, make the appointment object and save
+        Appointments appointments = appointmentsService.convertToAppointments(appointmentsDto);
+        appointments = appointmentsRepo.save(appointments);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/appointments/{id}").buildAndExpand(appointments.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
