@@ -40,6 +40,10 @@ public class Appointments {
         this.medicalRecord = record;
     }
 
+    public Appointments() {
+
+    }
+
     //Getters and Setters for the attributes
     public long getId() {return id;}
     public void setId(long id) {this.id = id;}
