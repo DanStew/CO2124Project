@@ -84,7 +84,7 @@ public class AppointmentRestController {
         appointments = appointmentsRepo.save(appointments);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/appointments/{id}").buildAndExpand(appointments.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(appointmentsService.convertToAppointmentDto(appointments));
     }
 
     //Function to get an appointment by a specific id
@@ -97,21 +97,41 @@ public class AppointmentRestController {
 
     //Function to update an appointment by a specific id
     @PutMapping("appointments/{id}")
-    public ResponseEntity<?> updateAppointment(@PathVariable Long id, @RequestBody Appointments appointments) {
+    public ResponseEntity<?> updateAppointment(@PathVariable Long id, @RequestBody AppointmentsDto appointmentsDto) {
         Optional<Appointments> appointmentsOptional = appointmentsRepo.findById(id);
         if (appointmentsOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Appointment " + id + " not found"));
         }
+        //Ensuring the given appointment id matches the id from the URL
+        if (id != appointmentsDto.getId()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorInfo("Appointment " + id + " doesn't match URL Id"));
+        }
+        //Ensuring there is a valid patient, doctor and record
+        //If the doctor id doesn't exist in the db, return error
+        if(!doctorRepo.existsById(appointmentsDto.getDoctorId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Doctor " + appointmentsDto.getDoctorId() + " doesn't exists"));
+        }
+        //If the patient id doesn't exist in the db, return error
+        if(!patientRepo.existsById(appointmentsDto.getPatientId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Patient " + appointmentsDto.getPatientId() + " doesn't exists"));
+        }
+        //If the record id doesn't exist in the db, return error
+        if(appointmentsDto.getRecordId() != null && !recordRepo.existsById(appointmentsDto.getRecordId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Record " + appointmentsDto.getRecordId() + " doesn't exists"));
+        }
+        //Converting the appointmentDto into an appointment
+        Appointments newAppointments = appointmentsService.convertToAppointments(appointmentsDto);
+        //Updating the current appointment
         Appointments currentAppointment = appointmentsOptional.get();
-        currentAppointment.setId(appointments.getId());
-        currentAppointment.setAppointmentDate(appointments.getAppointmentDate());
-        currentAppointment.setStatus(appointments.getStatus());
-        currentAppointment.setNotes(appointments.getNotes());
-        currentAppointment.setDoctor(appointments.getDoctor());
-        currentAppointment.setPatient(appointments.getPatient());
-        currentAppointment.setMedicalRecord(appointments.getMedicalRecord());
-        appointmentsRepo.save(currentAppointment);
-        return ResponseEntity.ok(appointmentsService.convertToAppointmentDto(appointments));
+        currentAppointment.setId(newAppointments.getId());
+        currentAppointment.setAppointmentDate(newAppointments.getAppointmentDate());
+        currentAppointment.setStatus(newAppointments.getStatus());
+        currentAppointment.setNotes(newAppointments.getNotes());
+        currentAppointment.setDoctor(newAppointments.getDoctor());
+        currentAppointment.setPatient(newAppointments.getPatient());
+        currentAppointment.setMedicalRecord(newAppointments.getMedicalRecord());
+        currentAppointment = appointmentsRepo.save(currentAppointment);
+        return ResponseEntity.ok(appointmentsService.convertToAppointmentDto(currentAppointment));
     }
 
     //Function to delete an appointment by a specific id

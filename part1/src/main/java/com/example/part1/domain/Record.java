@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @Entity
 @Table
@@ -20,6 +21,18 @@ public class Record {
     @ManyToOne()
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
+
+    //Constructors for Records
+    public Record(long id, Timestamp recordDate, String diagnosis, String treatment, String notes, Optional<Patient> patient) {
+        this.id = id;
+        this.recordDate = recordDate;
+        this.diagnosis = diagnosis;
+        this.treatment = treatment;
+        this.notes = notes;
+        this.patient = patient.orElse(null);
+    }
+
+    public Record() {}
 
     //Getters and setter for the attributes
     public long getId() {return id;}

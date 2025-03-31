@@ -50,7 +50,7 @@ public class PatientRestController {
             patientDtos.add(patientService.convertToPatientDto(patient));
         }
 
-        return patients.isEmpty() ?   ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ErrorInfo("No Patients found"))
+        return patients.isEmpty() ?   ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("No Patients found"))
                 : ResponseEntity.ok(patientDtos);
 
     }
@@ -62,7 +62,7 @@ public class PatientRestController {
         patient = patientRepo.save(patient);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/api/patients/{id}").buildAndExpand(patient.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(patient);
     }
     @GetMapping("patients/{id}")
     public ResponseEntity<?> getPatient(@PathVariable Long id) {
@@ -82,7 +82,7 @@ public class PatientRestController {
         currentPatient.setEmail(patient.getEmail());
         currentPatient.setPhoneNumber(patient.getPhoneNumber());
         currentPatient.setAppointmentsList(patient.getAppointmentsList());
-        patientRepo.save(currentPatient);
+        patient = patientRepo.save(currentPatient);
         return ResponseEntity.ok(patientService.convertToPatientDto(patient));
 
     }

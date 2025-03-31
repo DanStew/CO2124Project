@@ -45,7 +45,7 @@ public class DoctorRestController {
             doctorDtos.add(doctorService.convertToDoctorDto(doctor));
         }
 
-        return doctors.isEmpty() ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ErrorInfo("No Doctors found"))
+        return doctors.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("No Doctors found"))
                 : ResponseEntity.ok(doctorDtos);
     }
 
@@ -57,7 +57,7 @@ public class DoctorRestController {
         doctor = doctorRepo.save(doctor);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/api/doctors/{id}").buildAndExpand(doctor.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(doctor);
     }
 
     @GetMapping("doctors/{id}")
@@ -78,12 +78,13 @@ public class DoctorRestController {
         currentDoctor.setSpecialisation(doctor.getSpecialisation());
         currentDoctor.setEmail(doctor.getEmail());
         currentDoctor.setPhoneNumber(doctor.getPhoneNumber());
-        currentDoctor.setAppointmentsList(doctor.getAppointmentsList());
-        doctorRepo.save(currentDoctor);
+        currentDoctor.getAppointmentsList().clear();
+        currentDoctor.getAppointmentsList().addAll(doctor.getAppointmentsList());
+        doctor = doctorRepo.save(currentDoctor);
         return ResponseEntity.ok(doctorService.convertToDoctorDto(doctor));
     }
 
-    @DeleteMapping("doctor/{id}")
+    @DeleteMapping("doctors/{id}")
     public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         if (!doctorRepo.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -93,7 +94,7 @@ public class DoctorRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("doctor/{id}/appointments")
+    @GetMapping("doctors/{id}/appointments")
     public ResponseEntity<?> getDoctorAppointmentsById(@PathVariable Long id) {
         Optional<Doctor> optionalDoctor = doctorRepo.findById(id);
         if (optionalDoctor.isEmpty()) {
