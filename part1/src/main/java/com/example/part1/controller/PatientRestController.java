@@ -103,7 +103,7 @@ public class PatientRestController {
 
         if (optionalPatient.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Patient " + id + " appointments not found");
+                    .body("Patient " + id + " not found");
         }
 
         List<Appointments> appointments = optionalPatient.get().getAppointmentsList();
@@ -142,6 +142,4 @@ public class PatientRestController {
 
         return ResponseEntity.ok(recordDtos);
     }
-
-
 }

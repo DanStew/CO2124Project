@@ -52,12 +52,12 @@ public class DoctorRestController {
     @PostMapping("doctors")
     public ResponseEntity<?> newDoctor(@RequestBody Doctor doctor, UriComponentsBuilder ucBuilder) {
         if(doctor.getId() != null && doctorRepo.existsById(doctor.getId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Doctor " + doctor.getName() + " already exists"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Doctor " + doctor.getId() + " already exists"));
         }
         doctor = doctorRepo.save(doctor);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/api/doctors/{id}").buildAndExpand(doctor.getId()).toUri());
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(doctor);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(doctorService.convertToDoctorDto(doctor));
     }
 
     @GetMapping("doctors/{id}")
@@ -99,7 +99,7 @@ public class DoctorRestController {
         Optional<Doctor> optionalDoctor = doctorRepo.findById(id);
         if (optionalDoctor.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Doctor " + id + " appointments not found");
+                    .body("Doctor " + id + " not found");
         }
         List<Appointments> appointments = optionalDoctor.get().getAppointmentsList();
         if (appointments.isEmpty()) {
@@ -116,5 +116,4 @@ public class DoctorRestController {
 
         return ResponseEntity.ok(appointmentsDtos);
     }
-
 }

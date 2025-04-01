@@ -1,9 +1,878 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
-  title: part1
-  description: part1
+  title: Part 1 - Hospital Management System API
+  description: Swagger API Specification for the Hospital Management System developed throughout Part 1 of the Project
   version: 1.0.0
 servers:
-  - url: 'http'
+  - url: 'localhost:8080/api'
+    description : The base address for the API
+tags:
+  - name: patients
+    description : Patients of the Hospital
+  - name: doctors
+    description : Doctors employed by the Hospital
+  - name : appointments
+    description : Different Appointments of the Hosptial, including appointment information, and connected entities to the appointment
+  - name : records
+    description : The Medical Record belonging to the Patients
+components:
+  schemas:
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description : Unique Identifier for a Patient
+          example : 1
+        name:
+          type: string
+          description : The Patient's Full Name
+          example : "John Doe"
+        email:
+          type: string
+          description : The Patient's Email Address
+          example : "example@example.com"
+        phoneNumber:
+          type: string
+          description : The Patient's Phone Number
+          example : "0123456789"
+        address:
+          type: string
+          description : The Patient's Address
+          example : "123 Main Street, Town, County, Country"
+        appointmentsList:
+          type : array
+          description : The Patient's List of Appointments
+          items : 
+            $ref : '#/components/schemas/Appointments'
+        medicalRecords:
+          type: array
+          description : The Patient's List of Medical Records
+          items : 
+            $ref : '#/components/schemas/Record'
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description : Unique Identifier for a Doctor
+          example : 1
+        name:
+          type: string
+          description : The Doctor's Full Name
+          example : "Dr Doe"
+        specialisation:
+          type: string
+          description : The Doctor's Specialisation
+          example : "Cardiology"
+        email:
+          type: string
+          description : The Doctor's Email
+          example : "example@example.com"
+        phoneNumber:
+          type: string
+          description : The Doctors's Phone Number
+          example : "0123456789"
+        appointmentsList:
+          type : array
+          description : The Doctor's List of Appointments
+          items : 
+            $ref : '#/components/schemas/Appointments'
+    Appointments:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description : Unique Identifier for an Appointment
+          example : 1
+        appointmentDate:
+          type: string
+          format : date-time
+          description : A Timestamp for the date of the Appointment
+          example : '2025-04-01T10:00:00Z'
+        status:
+          type: string
+          description : The status of the Appointment
+          example : "Scheduled"
+        notes:
+          type: string
+          description : Notes made from the Appointment
+          example : "Presciption has been subscribed"
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        patient:
+          $ref : '#/components/schemas/Patient'
+        medicalRecord:
+          $ref : '#/components/schemas/Record'
+    Record:
+      type: object
+      properties:
+        id:
+          type: integer
+          format : int64
+          description : Unique Identifier for a Record
+          example : 1
+        recordDate:
+          type: string
+          format : date-time
+          description : The date and time of when the record was created
+          example : '2025-04-01T10:00:00Z'
+        diagnosis:
+          type: string
+          description : The diagnosis for the Patient
+          example : "Diagnosed with a Cough"
+        treatment:
+          type: string
+          description : The Treatment for the Diagnosis given
+          example : "Cough Medicine"
+        notes : 
+          type: string
+          description : Any additional notes made for the Record
+          example : "Should clear up in a couple of days"
+        patient:
+          $ref: '#/components/schemas/Patient'
+    ErrorInfo:
+      type: object
+      properties : 
+        message : 
+          type: string
+          description : The message for the Error given, should be accompanied with a Status Code in HTTP Responses
+          example : "Couldn't find the entity with the given id"
+    PatientDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description : Unique Identifier for a Patient
+          example : 1
+        name:
+          type: string
+          description : The Patient's Full Name
+          example : "John Doe"
+        email:
+          type: string
+          description : The Patient's Email Address
+          example : "example@example.com"
+        phoneNumber:
+          type: string
+          description : The Patient's Phone Number
+          example : "0123456789"
+        address:
+          type: string
+          description : The Patient's Address
+          example : "123 Main Street, Town, County, Country"
+        appointmentIds:
+          type : array
+          description : The Patient's List of Appointments, only storing the ids of the appointments
+          items : 
+            type: integer
+            format : int64
+        medicalRecordIds:
+          type: array
+          description : The Patient's List of Medical Records, only storing the ids of the records
+          items : 
+            type: integer
+            format : int64
+    DoctorDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description : Unique Identifier for a Doctor
+          example : 1
+        name:
+          type: string
+          description : The Doctor's Full Name
+          example : "Dr Doe"
+        specialisation:
+          type: string
+          description : The Doctor's Specialisation
+          example : "Cardiology"
+        email:
+          type: string
+          description : The Doctor's Email
+          example : "example@example.com"
+        phoneNumber:
+          type: string
+          description : The Doctors's Phone Number
+          example : "0123456789"
+        appointmentIds:
+          type : array
+          description : The Doctor's List of Appointments, only storing the ids of the appointments
+          items : 
+            type: integer
+            format: int64
+    AppointmentsDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description : Unique Identifier for an Appointment
+          example : 1
+        appointmentDate:
+          type: string
+          format : date-time
+          description : A Timestamp for the date of the Appointment
+          example : '2025-04-01T10:00:00Z'
+        status:
+          type: string
+          description : The status of the Appointment
+          example : "Scheduled"
+        notes:
+          type: string
+          description : Notes made from the Appointment
+          example : "Presciption has been subscribed"
+        doctorId:
+          type: integer
+          format: int64
+          description : "The id of the doctor the appointment is connected to"
+          example : 1
+        patientId:
+          type: integer
+          format: int64
+          description : "The id of the patient the appointment is connected to"
+          example : 1
+        medicalRecordId:
+          type: integer
+          format: int64
+          description : "The id of the medical record the appointment is connected to"
+          example : 1
+    RecordDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format : int64
+          description : Unique Identifier for a Record
+          example : 1
+        recordDate:
+          type: string
+          format : date-time
+          description : The date and time of when the record was created
+          example : '2025-04-01T10:00:00Z'
+        diagnosis:
+          type: string
+          description : The diagnosis for the Patient
+          example : "Diagnosed with a Cough"
+        treatment:
+          type: string
+          description : The Treatment for the Diagnosis given
+          example : "Cough Medicine"
+        notes : 
+          type: string
+          description : Any additional notes made for the Record
+          example : "Should clear up in a couple of days"
+        patientId:
+          type: integer
+          format: int64
+          description : "The id of the patient the record is connected to"
+          example : 1
+  requestBodies : 
+    PatientDto :
+      description : The Patient object in a safely transferable format
+      content : 
+        application/json:
+          schema:
+            $ref : '#/components/schemas/PatientDto'
+    DoctorDto :
+      description : The Doctor object in a safely transferable format
+      content : 
+        application/json:
+          schema:
+            $ref : '#/components/schemas/DoctorDto'
+    AppointmentsDto :
+      description : The Appointment object in a safely transferable format
+      content : 
+        application/json:
+          schema:
+            $ref : '#/components/schemas/AppointmentsDto'
+    RecordDto :
+      description : The Record object in a safely transferable format
+      content : 
+        application/json:
+          schema:
+            $ref : '#/components/schemas/RecordDto'
 paths:
-  
+  /patients : 
+    get :
+      summary : Lists all Patients
+      tags : 
+        - patients
+      responses : 
+        '200' : 
+          description : Patients list is returned successfully
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PatientDto'
+        '404' : 
+          description : No Patient objects can be found to be returned
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'No Patients Found'
+    post :
+      summary : Make a Patient Object
+      tags : 
+        - patients
+      requestBody :
+        $ref : '#/components/requestBodies/PatientDto'
+      responses : 
+        '201' : 
+          description : The Patient has been successfully created
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientDto'
+        '409' : 
+          description : The Patient Id entered already has been made, so conflict occurs
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : "Patient John Doe already exists"
+  /patients/{id} : 
+    get : 
+      summary : Gets a Patient with a given id
+      tags : 
+        - patients
+      parameters:
+        - name: id
+          in: path
+          description: ID of Patient to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : Patient with given Id is successfully returned
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientDto'
+        '404' : 
+          description : Can't find the Patient with the given id
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Patient 1 not found'
+    put : 
+      summary : Update the Patient object of the given id
+      tags : 
+        - patients
+      parameters:
+        - name: id
+          in: path
+          description: ID of Patient to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody :
+        $ref : '#/components/requestBodies/PatientDto'
+      responses : 
+        '200' : 
+          description : Patient with given id is successfully updated and returned
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientDto'
+        '404' : 
+          description : Patient with the given id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Patient 1 not found'
+    delete : 
+      summary : Delete the Patient object of the given id
+      tags : 
+        - patients
+      parameters:
+        - name: id
+          in: path
+          description: ID of Patient to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '204' : 
+          description : Patient with the given id is found and deleted, so No Content is returned
+        '404' : 
+          description : Patient with the given id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Patient 1 not found'
+  /patients/{id}/appointments :
+    get :
+      summary : Gets all the appointments of the Patient object with the given id
+      tags : 
+        - patients
+      parameters:
+        - name: id
+          in: path
+          description: ID of Patient to get the appointments for
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : The Patient's appointment list is returned
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentsDto'
+        '204' :
+          description : The Patient with the given id has no appointments, so No Content is returned
+        '404' : 
+          description : Patient with the given id cannot be found, so no appointments can be returned
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Patient 1 not found'
+  /patients/{id}/medical-records : 
+    get : 
+      summary : Gets all the medical records of the Patient object with the given id
+      tags : 
+        - patients
+      parameters:
+        - name: id
+          in: path
+          description: ID of Patient to get the medical records for
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : The Patient's medical record list is returned
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordDto'
+        '204' :
+          description : The Patient with the given id has no Medical Records, so No Content is returned
+        '404' : 
+          description : Patient with the given id cannot be found, so no Medical Records can be returned
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Patient 1 not be found'
+  /doctors : 
+    get : 
+      summary : Lists all Doctors
+      tags : 
+        - doctors
+      responses : 
+        '200' : 
+          description : Doctors list is returned successfully
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DoctorDto'
+        '404' : 
+          description : No Doctor objects can be found to be returned
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : "No Doctors found"
+    post : 
+      summary : Make a Doctor Object
+      tags : 
+        - doctors
+      requestBody :
+        $ref : '#/components/requestBodies/DoctorDto'
+      responses : 
+        '201' : 
+          description : Doctor object is successfully made and returned
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorDto'
+        '409' : 
+          description : The given Id for the Doctor to be made already exists in the database
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Doctor 1 already exists'
+  /doctors/{id} :
+    get : 
+      summary : Gets a Doctor object with a given id
+      tags : 
+        - doctors
+      parameters:
+        - name: id
+          in: path
+          description: ID of Doctor to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : The Doctor with the given Id is returned
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorDto'
+        '404' : 
+          description : The Doctor with the given Id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Doctor 1 not found'
+    put : 
+      summary : Update a Doctor object with a given id
+      tags : 
+        - doctors
+      parameters:
+        - name: id
+          in: path
+          description: ID of Doctor to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody :
+        $ref : '#/components/requestBodies/DoctorDto'
+      responses : 
+        '200' : 
+          description : Doctor with the given id is updated and returned
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorDto'
+        '404' : 
+          description : The Doctor with the given id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Doctor 1 not found'
+    delete : 
+      summary : Delete a Doctor object with a given id
+      tags : 
+        - doctors
+      parameters:
+        - name: id
+          in: path
+          description: ID of Doctor to Delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '204' : 
+          description : The Doctor with the given id is found and deleted, so No Content is returned
+        '404' : 
+          description : The Doctor with the given id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Doctor 1 not found'
+  /doctors/{id}/appointments : 
+    get : 
+      summary : Gets all the appointments of the Doctor object with the given id
+      tags : 
+        - doctors
+      parameters:
+        - name: id
+          in: path
+          description: ID of Doctor to get the appointments for
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : The Appointments List for the Doctor with the given Id is returned
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentsDto'
+        '204' :
+          description : The Doctor with the given Id has no appointments, so No Content is returned
+        '404' : 
+          description : The Doctor with the given Id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Doctor 1 not found'
+  /appointments : 
+    get : 
+      summary : Get all Appointments
+      tags : 
+        - appointments
+      responses : 
+        '200' : 
+          description : Appointments list is returned successfully
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentsDto'
+        '404' : 
+          description : No Appointment objects can be found to be returned
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'No Appointments Found'
+    post : 
+      summary : Make an Appointment object
+      tags : 
+        - appointments
+      requestBody : 
+        $ref: '#/components/requestBodies/AppointmentsDto'
+      responses : 
+        '201' : 
+          description : The Appointments Object is successfully made and returned
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentsDto'
+        '404' :
+          description : The Patient / Doctor / Record id given in the requestBody cannot be found in the database
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : "Doctor 1 doesn't exist"
+        '409' : 
+          description : The Appointments with the given id already exists
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Appointment 1 already exists'
+  /appointments/{id} : 
+    get : 
+      summary : Get an Appointment object with a given id
+      tags : 
+        - appointments
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Appointment to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : Appointment with the given Id is returned
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentsDto'
+        '404' : 
+          description : The Appointment with the given Id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Appointment 1 not found'
+    put : 
+      summary : Update an Appointment object with a given id
+      tags : 
+        - appointments
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Appointment to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref : '#/components/requestBodies/AppointmentsDto'
+      responses : 
+        '200' : 
+          description : The Appointment is updated and returned
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentsDto'
+        '400' :
+          description : The Appointment id given in the requestBody doesn't match the id given in the URL
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : "Appointment 1 doesn't match URL Id"
+        '404' : 
+          description : The Appointment/ Patient/ Doctor/ Record Id given cannot be found in the database
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Appointment 1 not found'
+    delete : 
+      summary : Delete an Appointment object with a given id
+      tags : 
+        - appointments
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Appointment to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '204' : 
+          description : The Appointment with the given id is deleted, so No Content is returned
+        '404' : 
+          description : The Appointment object with the given id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Appointment 1 not found'
+  /appointments/{id}/medical-records : 
+    get : 
+      summary : Get the medical record of the Appointment object with a given id
+      tags : 
+        - appointments
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Appointment to get the Medical Records for
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : Medical Records list of the given Appointment Id is returned successfully
+          content : 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordDto'
+        '204' :
+          description : The Medical Records List is empty, so No Content is returned
+        '404' : 
+          description : The Appointment of the given Id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Appointment 1 not found'
+  /medical-records : 
+    post : 
+      summary : Make a Medical Record object
+      tags : 
+        - records
+      requestBody:
+        $ref: '#/components/requestBodies/RecordDto'
+      responses : 
+        '200' : 
+          description : Medical Record is created and successfully returned
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordDto'
+        '404' : 
+          description : Patient id given in the request body cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Patient 1 not found'
+        '409' :
+          description : The Record Id given in the request body already exists
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Medical Record 1 already exists'
+  /medical-records/{id} : 
+    get :
+      summary : Get a Medical Record object with a given id
+      tags : 
+        - records
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Medical Record to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses : 
+        '200' : 
+          description : Medical Record with the given id is found and successfully returned
+          content : 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordDto'
+        '404' : 
+          description : Medical Record with the given id cannot be found
+          content : 
+            application/json :
+              schema : 
+                $ref : '#/components/schemas/ErrorInfo'
+              example : 
+                message : 'Medical Record 1 not found'

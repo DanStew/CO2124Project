@@ -69,15 +69,15 @@ public class AppointmentRestController {
         }
         //If the doctor id doesn't exist in the db, return error
         if(!doctorRepo.existsById(appointmentsDto.getDoctorId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Doctor " + appointmentsDto.getDoctorId() + " doesn't exists"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Doctor " + appointmentsDto.getDoctorId() + " doesn't exists"));
         }
         //If the patient id doesn't exist in the db, return error
         if(!patientRepo.existsById(appointmentsDto.getPatientId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Patient " + appointmentsDto.getPatientId() + " doesn't exists"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Patient " + appointmentsDto.getPatientId() + " doesn't exists"));
         }
         //If the record id doesn't exist in the db, return error
         if(appointmentsDto.getRecordId() != null && !recordRepo.existsById(appointmentsDto.getRecordId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Record " + appointmentsDto.getRecordId() + " doesn't exists"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Record " + appointmentsDto.getRecordId() + " doesn't exists"));
         }
         //If all the ids exist, make the appointment object and save
         Appointments appointments = appointmentsService.convertToAppointments(appointmentsDto);
@@ -109,15 +109,15 @@ public class AppointmentRestController {
         //Ensuring there is a valid patient, doctor and record
         //If the doctor id doesn't exist in the db, return error
         if(!doctorRepo.existsById(appointmentsDto.getDoctorId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Doctor " + appointmentsDto.getDoctorId() + " doesn't exists"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Doctor " + appointmentsDto.getDoctorId() + " doesn't exists"));
         }
         //If the patient id doesn't exist in the db, return error
         if(!patientRepo.existsById(appointmentsDto.getPatientId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Patient " + appointmentsDto.getPatientId() + " doesn't exists"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Patient " + appointmentsDto.getPatientId() + " doesn't exists"));
         }
         //If the record id doesn't exist in the db, return error
         if(appointmentsDto.getRecordId() != null && !recordRepo.existsById(appointmentsDto.getRecordId())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorInfo("Record " + appointmentsDto.getRecordId() + " doesn't exists"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Record " + appointmentsDto.getRecordId() + " doesn't exists"));
         }
         //Converting the appointmentDto into an appointment
         Appointments newAppointments = appointmentsService.convertToAppointments(appointmentsDto);
