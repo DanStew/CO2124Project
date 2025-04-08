@@ -42,7 +42,7 @@ public abstract class AppDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
-
+    //initialises values when started
     private static final RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
 
         @Override

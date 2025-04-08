@@ -32,11 +32,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate started");
 
-        // Initialize view binding
+        // initialise view binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Initialize ViewModel
+        // Initialise ViewModel
         courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
         Log.d(TAG, "ViewModel initialised ");
 

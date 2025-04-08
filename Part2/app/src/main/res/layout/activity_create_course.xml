@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_course_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <EditText
+        android:id="@+id/edit_course_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter course code"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/edit_course_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter course name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/edit_lecturer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter lecturer's name"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/button_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:text="Create" />
+</LinearLayout>

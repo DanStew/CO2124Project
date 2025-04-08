@@ -17,7 +17,7 @@ public class CourseRepository {
     private final LiveData<List<Course>> allCourses;
 
     public CourseRepository(Application application) {
-        // Initialize AppDatabase and CourseDao
+        // Initialise AppDatabase and CourseDao
         AppDatabase db = AppDatabase.getDatabase(application);
         courseDao = db.courseDao();
         allCourses = courseDao.getCourseList();  // LiveData for all courses
@@ -46,7 +46,7 @@ public class CourseRepository {
         AppDatabase.databaseWriteExecutor.execute(() -> courseDao.delete(course));
     }
 
-    // (Optional) Update a course if needed
+    // Update a course if needed
     public void update(Course course) {
         AppDatabase.databaseWriteExecutor.execute(() -> courseDao.update(course));
     }
