@@ -12,7 +12,7 @@ import uk.edu.le.Part2.database.CourseWithStudents;
 public interface CourseDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-     void insert(Course course);
+     long insert(Course course);
 
     @Update
     void update(Course course);

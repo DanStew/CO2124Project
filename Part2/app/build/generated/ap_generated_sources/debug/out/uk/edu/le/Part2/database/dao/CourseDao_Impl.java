@@ -125,12 +125,13 @@ public final class CourseDao_Impl implements CourseDao {
   }
 
   @Override
-  public void insert(final Course course) {
+  public long insert(final Course course) {
     __db.assertNotSuspendingTransaction();
     __db.beginTransaction();
     try {
-      __insertionAdapterOfCourse.insert(course);
+      final long _result = __insertionAdapterOfCourse.insertAndReturnId(course);
       __db.setTransactionSuccessful();
+      return _result;
     } finally {
       __db.endTransaction();
     }
@@ -354,7 +355,7 @@ public final class CourseDao_Impl implements CourseDao {
       return;
     }
     final StringBuilder _stringBuilder = StringUtil.newStringBuilder();
-    _stringBuilder.append("SELECT `student`.`studentId` AS `studentId`,`student`.`fullName` AS `fullName`,`student`.`email` AS `email`,`student`.`username` AS `username`,_junction.`courseId` FROM `enrollment` AS _junction INNER JOIN `student` ON (_junction.`studentId` = `student`.`studentId`) WHERE _junction.`courseId` IN (");
+    _stringBuilder.append("SELECT `student`.`studentId` AS `studentId`,`student`.`fullName` AS `fullName`,`student`.`email` AS `email`,`student`.`matricNum` AS `matricNum`,`student`.`username` AS `username`,_junction.`courseId` FROM `enrollment` AS _junction INNER JOIN `student` ON (_junction.`studentId` = `student`.`studentId`) WHERE _junction.`courseId` IN (");
     final int _inputSize = _map.size();
     StringUtil.appendPlaceholders(_stringBuilder, _inputSize);
     _stringBuilder.append(")");
@@ -370,42 +371,49 @@ public final class CourseDao_Impl implements CourseDao {
     final Cursor _cursor = DBUtil.query(__db, _stmt, false, null);
     try {
       // _junction.courseId;
-      final int _itemKeyIndex = 4;
+      final int _itemKeyIndex = 5;
       if (_itemKeyIndex == -1) {
         return;
       }
       final int _cursorIndexOfStudentId = 0;
       final int _cursorIndexOfFullName = 1;
       final int _cursorIndexOfEmail = 2;
-      final int _cursorIndexOfUsername = 3;
+      final int _cursorIndexOfMatricNum = 3;
+      final int _cursorIndexOfUsername = 4;
       while (_cursor.moveToNext()) {
         final long _tmpKey;
         _tmpKey = _cursor.getLong(_itemKeyIndex);
         final ArrayList<Student> _tmpRelation = _map.get(_tmpKey);
         if (_tmpRelation != null) {
           final Student _item_1;
+          _item_1 = new Student();
+          final int _tmpStudentId;
+          _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
+          _item_1.setStudentId(_tmpStudentId);
           final String _tmpFullName;
           if (_cursor.isNull(_cursorIndexOfFullName)) {
             _tmpFullName = null;
           } else {
             _tmpFullName = _cursor.getString(_cursorIndexOfFullName);
           }
+          _item_1.setFullName(_tmpFullName);
           final String _tmpEmail;
           if (_cursor.isNull(_cursorIndexOfEmail)) {
             _tmpEmail = null;
           } else {
             _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
           }
+          _item_1.setEmail(_tmpEmail);
+          final int _tmpMatricNum;
+          _tmpMatricNum = _cursor.getInt(_cursorIndexOfMatricNum);
+          _item_1.setMatricNum(_tmpMatricNum);
           final String _tmpUsername;
           if (_cursor.isNull(_cursorIndexOfUsername)) {
             _tmpUsername = null;
           } else {
             _tmpUsername = _cursor.getString(_cursorIndexOfUsername);
           }
-          _item_1 = new Student(_tmpFullName,_tmpEmail,_tmpUsername);
-          final int _tmpStudentId;
-          _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
-          _item_1.setStudentId(_tmpStudentId);
+          _item_1.setUsername(_tmpUsername);
           _tmpRelation.add(_item_1);
         }
       }

@@ -17,13 +17,14 @@ import uk.edu.le.Part2.database.StudentWithCourses;
 @Dao
 public interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Student student); // Returns new ID
+    long insert(Student student); // Returns new ID
 
     @Update
     void update(Student student);
 
     @Delete
     void delete(Student student);
+
     @Query("DELETE FROM student")
     void deleteAll();
 
@@ -33,4 +34,7 @@ public interface StudentDao {
     @Transaction
     @Query("SELECT * FROM student WHERE studentId = :studentId")
     LiveData<StudentWithCourses> getStudentWithCourses(int studentId);
+
+    @Query("SELECT * FROM Student WHERE studentId = :studentId")
+    LiveData<Student> getStudentById(int studentId);
 }

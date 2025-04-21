@@ -42,16 +42,16 @@ public final class AppDatabase_Impl extends AppDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(1) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(3) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `course` (`courseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `courseCode` TEXT, `courseName` TEXT, `lecturerName` TEXT)");
         db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_course_courseCode` ON `course` (`courseCode`)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `student` (`studentId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fullName` TEXT, `email` TEXT, `username` TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `student` (`studentId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fullName` TEXT, `email` TEXT, `matricNum` INTEGER NOT NULL, `username` TEXT NOT NULL)");
         db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_student_username` ON `student` (`username`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `enrollment` (`studentId` INTEGER NOT NULL, `courseId` INTEGER NOT NULL, PRIMARY KEY(`studentId`, `courseId`), FOREIGN KEY(`studentId`) REFERENCES `student`(`studentId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`courseId`) REFERENCES `course`(`courseId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '721952dda8e04d74812d8f58fa7b4b9b')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f75ff8f1c7dfb08c5b7a56550c84dd52')");
       }
 
       @Override
@@ -118,10 +118,11 @@ public final class AppDatabase_Impl extends AppDatabase {
                   + " Expected:\n" + _infoCourse + "\n"
                   + " Found:\n" + _existingCourse);
         }
-        final HashMap<String, TableInfo.Column> _columnsStudent = new HashMap<String, TableInfo.Column>(4);
+        final HashMap<String, TableInfo.Column> _columnsStudent = new HashMap<String, TableInfo.Column>(5);
         _columnsStudent.put("studentId", new TableInfo.Column("studentId", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsStudent.put("fullName", new TableInfo.Column("fullName", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsStudent.put("email", new TableInfo.Column("email", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsStudent.put("matricNum", new TableInfo.Column("matricNum", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsStudent.put("username", new TableInfo.Column("username", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysStudent = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesStudent = new HashSet<TableInfo.Index>(1);
@@ -149,7 +150,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "721952dda8e04d74812d8f58fa7b4b9b", "bd3402625043e3af0de771c7f5cb8986");
+    }, "f75ff8f1c7dfb08c5b7a56550c84dd52", "bd4c669745e980a862264042d1dcbc10");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

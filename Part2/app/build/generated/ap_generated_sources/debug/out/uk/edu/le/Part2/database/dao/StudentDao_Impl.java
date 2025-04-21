@@ -51,7 +51,7 @@ public final class StudentDao_Impl implements StudentDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR IGNORE INTO `student` (`studentId`,`fullName`,`email`,`username`) VALUES (nullif(?, 0),?,?,?)";
+        return "INSERT OR IGNORE INTO `student` (`studentId`,`fullName`,`email`,`matricNum`,`username`) VALUES (nullif(?, 0),?,?,?,?)";
       }
 
       @Override
@@ -67,10 +67,11 @@ public final class StudentDao_Impl implements StudentDao {
         } else {
           statement.bindString(3, entity.getEmail());
         }
+        statement.bindLong(4, entity.getMatricNum());
         if (entity.getUsername() == null) {
-          statement.bindNull(4);
+          statement.bindNull(5);
         } else {
-          statement.bindString(4, entity.getUsername());
+          statement.bindString(5, entity.getUsername());
         }
       }
     };
@@ -90,7 +91,7 @@ public final class StudentDao_Impl implements StudentDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "UPDATE OR ABORT `student` SET `studentId` = ?,`fullName` = ?,`email` = ?,`username` = ? WHERE `studentId` = ?";
+        return "UPDATE OR ABORT `student` SET `studentId` = ?,`fullName` = ?,`email` = ?,`matricNum` = ?,`username` = ? WHERE `studentId` = ?";
       }
 
       @Override
@@ -106,12 +107,13 @@ public final class StudentDao_Impl implements StudentDao {
         } else {
           statement.bindString(3, entity.getEmail());
         }
+        statement.bindLong(4, entity.getMatricNum());
         if (entity.getUsername() == null) {
-          statement.bindNull(4);
+          statement.bindNull(5);
         } else {
-          statement.bindString(4, entity.getUsername());
+          statement.bindString(5, entity.getUsername());
         }
-        statement.bindLong(5, entity.getStudentId());
+        statement.bindLong(6, entity.getStudentId());
       }
     };
     this.__preparedStmtOfDeleteAll = new SharedSQLiteStatement(__db) {
@@ -125,12 +127,13 @@ public final class StudentDao_Impl implements StudentDao {
   }
 
   @Override
-  public void insert(final Student student) {
+  public long insert(final Student student) {
     __db.assertNotSuspendingTransaction();
     __db.beginTransaction();
     try {
-      __insertionAdapterOfStudent.insert(student);
+      final long _result = __insertionAdapterOfStudent.insertAndReturnId(student);
       __db.setTransactionSuccessful();
+      return _result;
     } finally {
       __db.endTransaction();
     }
@@ -190,32 +193,39 @@ public final class StudentDao_Impl implements StudentDao {
           final int _cursorIndexOfStudentId = CursorUtil.getColumnIndexOrThrow(_cursor, "studentId");
           final int _cursorIndexOfFullName = CursorUtil.getColumnIndexOrThrow(_cursor, "fullName");
           final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
+          final int _cursorIndexOfMatricNum = CursorUtil.getColumnIndexOrThrow(_cursor, "matricNum");
           final int _cursorIndexOfUsername = CursorUtil.getColumnIndexOrThrow(_cursor, "username");
           final List<Student> _result = new ArrayList<Student>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final Student _item;
+            _item = new Student();
+            final int _tmpStudentId;
+            _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
+            _item.setStudentId(_tmpStudentId);
             final String _tmpFullName;
             if (_cursor.isNull(_cursorIndexOfFullName)) {
               _tmpFullName = null;
             } else {
               _tmpFullName = _cursor.getString(_cursorIndexOfFullName);
             }
+            _item.setFullName(_tmpFullName);
             final String _tmpEmail;
             if (_cursor.isNull(_cursorIndexOfEmail)) {
               _tmpEmail = null;
             } else {
               _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
             }
+            _item.setEmail(_tmpEmail);
+            final int _tmpMatricNum;
+            _tmpMatricNum = _cursor.getInt(_cursorIndexOfMatricNum);
+            _item.setMatricNum(_tmpMatricNum);
             final String _tmpUsername;
             if (_cursor.isNull(_cursorIndexOfUsername)) {
               _tmpUsername = null;
             } else {
               _tmpUsername = _cursor.getString(_cursorIndexOfUsername);
             }
-            _item = new Student(_tmpFullName,_tmpEmail,_tmpUsername);
-            final int _tmpStudentId;
-            _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
-            _item.setStudentId(_tmpStudentId);
+            _item.setUsername(_tmpUsername);
             _result.add(_item);
           }
           return _result;
@@ -249,6 +259,7 @@ public final class StudentDao_Impl implements StudentDao {
             final int _cursorIndexOfStudentId = CursorUtil.getColumnIndexOrThrow(_cursor, "studentId");
             final int _cursorIndexOfFullName = CursorUtil.getColumnIndexOrThrow(_cursor, "fullName");
             final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
+            final int _cursorIndexOfMatricNum = CursorUtil.getColumnIndexOrThrow(_cursor, "matricNum");
             final int _cursorIndexOfUsername = CursorUtil.getColumnIndexOrThrow(_cursor, "username");
             final LongSparseArray<ArrayList<Course>> _collectionCourses = new LongSparseArray<ArrayList<Course>>();
             while (_cursor.moveToNext()) {
@@ -269,29 +280,35 @@ public final class StudentDao_Impl implements StudentDao {
             final StudentWithCourses _result;
             if (_cursor.moveToFirst()) {
               final Student _tmpStudent;
-              if (!(_cursor.isNull(_cursorIndexOfStudentId) && _cursor.isNull(_cursorIndexOfFullName) && _cursor.isNull(_cursorIndexOfEmail) && _cursor.isNull(_cursorIndexOfUsername))) {
+              if (!(_cursor.isNull(_cursorIndexOfStudentId) && _cursor.isNull(_cursorIndexOfFullName) && _cursor.isNull(_cursorIndexOfEmail) && _cursor.isNull(_cursorIndexOfMatricNum) && _cursor.isNull(_cursorIndexOfUsername))) {
+                _tmpStudent = new Student();
+                final int _tmpStudentId;
+                _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
+                _tmpStudent.setStudentId(_tmpStudentId);
                 final String _tmpFullName;
                 if (_cursor.isNull(_cursorIndexOfFullName)) {
                   _tmpFullName = null;
                 } else {
                   _tmpFullName = _cursor.getString(_cursorIndexOfFullName);
                 }
+                _tmpStudent.setFullName(_tmpFullName);
                 final String _tmpEmail;
                 if (_cursor.isNull(_cursorIndexOfEmail)) {
                   _tmpEmail = null;
                 } else {
                   _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
                 }
+                _tmpStudent.setEmail(_tmpEmail);
+                final int _tmpMatricNum;
+                _tmpMatricNum = _cursor.getInt(_cursorIndexOfMatricNum);
+                _tmpStudent.setMatricNum(_tmpMatricNum);
                 final String _tmpUsername;
                 if (_cursor.isNull(_cursorIndexOfUsername)) {
                   _tmpUsername = null;
                 } else {
                   _tmpUsername = _cursor.getString(_cursorIndexOfUsername);
                 }
-                _tmpStudent = new Student(_tmpFullName,_tmpEmail,_tmpUsername);
-                final int _tmpStudentId;
-                _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
-                _tmpStudent.setStudentId(_tmpStudentId);
+                _tmpStudent.setUsername(_tmpUsername);
               } else {
                 _tmpStudent = null;
               }
@@ -320,6 +337,69 @@ public final class StudentDao_Impl implements StudentDao {
           }
         } finally {
           __db.endTransaction();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
+  @Override
+  public LiveData<Student> getStudentById(final int studentId) {
+    final String _sql = "SELECT * FROM Student WHERE studentId = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, studentId);
+    return __db.getInvalidationTracker().createLiveData(new String[] {"Student"}, false, new Callable<Student>() {
+      @Override
+      @Nullable
+      public Student call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfStudentId = CursorUtil.getColumnIndexOrThrow(_cursor, "studentId");
+          final int _cursorIndexOfFullName = CursorUtil.getColumnIndexOrThrow(_cursor, "fullName");
+          final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
+          final int _cursorIndexOfMatricNum = CursorUtil.getColumnIndexOrThrow(_cursor, "matricNum");
+          final int _cursorIndexOfUsername = CursorUtil.getColumnIndexOrThrow(_cursor, "username");
+          final Student _result;
+          if (_cursor.moveToFirst()) {
+            _result = new Student();
+            final int _tmpStudentId;
+            _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
+            _result.setStudentId(_tmpStudentId);
+            final String _tmpFullName;
+            if (_cursor.isNull(_cursorIndexOfFullName)) {
+              _tmpFullName = null;
+            } else {
+              _tmpFullName = _cursor.getString(_cursorIndexOfFullName);
+            }
+            _result.setFullName(_tmpFullName);
+            final String _tmpEmail;
+            if (_cursor.isNull(_cursorIndexOfEmail)) {
+              _tmpEmail = null;
+            } else {
+              _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
+            }
+            _result.setEmail(_tmpEmail);
+            final int _tmpMatricNum;
+            _tmpMatricNum = _cursor.getInt(_cursorIndexOfMatricNum);
+            _result.setMatricNum(_tmpMatricNum);
+            final String _tmpUsername;
+            if (_cursor.isNull(_cursorIndexOfUsername)) {
+              _tmpUsername = null;
+            } else {
+              _tmpUsername = _cursor.getString(_cursorIndexOfUsername);
+            }
+            _result.setUsername(_tmpUsername);
+          } else {
+            _result = null;
+          }
+          return _result;
+        } finally {
+          _cursor.close();
         }
       }
 

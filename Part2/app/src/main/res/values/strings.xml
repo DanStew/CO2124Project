@@ -7,7 +7,10 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="add_course">Add Course</string>
+    <string name="add_student">Add Student</string>
     <string name="empty_not_saved">Course was not saved because it was empty.</string>
+    <string name="student_empty_not_saved">Student was not saved because it was empty.</string>
+    <string name="matric_not_num">Student was not saved because matric number was not an integer.</string>
 
 
 

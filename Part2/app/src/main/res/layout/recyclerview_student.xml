@@ -4,23 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
+    android:background="@android:color/holo_blue_light"
     android:orientation="vertical"> <!-- This makes the LinearLayout stack children vertically -->
 
     <TextView
         android:id="@+id/studentNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"/>
 
     <TextView
         android:id="@+id/studentEmailTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp" />
 
     <TextView
-        android:id="@+id/studentStudentIdTextView"
+        android:id="@+id/studentMatricTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 </LinearLayout>
