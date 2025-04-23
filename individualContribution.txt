@@ -1,2 +1,7 @@
-Each member puts down, max 60 words, what they did and their percentage of contribution
-Do this towards the end
+Daniel contributed 33% to this project. I contributed to the implementation of part1 as well as making documentation and testing for part 1. I helped test and made some minor adjustments to part2.
+
+
+Steve contributed 33% to this project. I made patient part of the implementation of part1 as well as the database files as well as completing the  course related (1,2,3,4) tasks for part 2.
+
+
+Ayo contriuted 33% to this project. I made the doctor part for the implementation of part1 as well as completing the student related tasks (5,6,7) for part 2.

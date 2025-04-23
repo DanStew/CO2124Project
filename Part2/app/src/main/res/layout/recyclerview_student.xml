@@ -3,28 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:background="@android:color/holo_blue_light"
-    android:orientation="vertical"> <!-- This makes the LinearLayout stack children vertically -->
+    android:padding="16dp"
+    android:background="#E0F7FA"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/studentNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="4dp"/>
+        android:textColor="#2196F3"
+        android:layout_marginBottom="8dp"/>
 
     <TextView
         android:id="@+id/studentEmailTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
+        android:textSize="16sp"
+        android:textColor="#424242"
         android:layout_marginBottom="4dp" />
 
     <TextView
         android:id="@+id/studentMatricTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#757575"
         android:textSize="14sp" />
 </LinearLayout>

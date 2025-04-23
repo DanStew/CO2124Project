@@ -62,7 +62,7 @@ public class PatientRestController {
         patient = patientRepo.save(patient);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/api/patients/{id}").buildAndExpand(patient.getId()).toUri());
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(patient);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(patientService.convertToPatientDto(patient));
     }
     @GetMapping("patients/{id}")
     public ResponseEntity<?> getPatient(@PathVariable Long id) {

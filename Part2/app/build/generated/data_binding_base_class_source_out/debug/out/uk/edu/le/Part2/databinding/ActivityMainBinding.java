@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
@@ -28,14 +29,18 @@ public final class ActivityMainBinding implements ViewBinding {
   public final FloatingActionButton fab;
 
   @NonNull
+  public final Toolbar toolbar;
+
+  @NonNull
   public final Button viewCoursesButton;
 
   private ActivityMainBinding(@NonNull ConstraintLayout rootView,
       @NonNull RecyclerView courseRecyclerView, @NonNull FloatingActionButton fab,
-      @NonNull Button viewCoursesButton) {
+      @NonNull Toolbar toolbar, @NonNull Button viewCoursesButton) {
     this.rootView = rootView;
     this.courseRecyclerView = courseRecyclerView;
     this.fab = fab;
+    this.toolbar = toolbar;
     this.viewCoursesButton = viewCoursesButton;
   }
 
@@ -78,13 +83,19 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.toolbar;
+      Toolbar toolbar = ViewBindings.findChildViewById(rootView, id);
+      if (toolbar == null) {
+        break missingId;
+      }
+
       id = R.id.viewCoursesButton;
       Button viewCoursesButton = ViewBindings.findChildViewById(rootView, id);
       if (viewCoursesButton == null) {
         break missingId;
       }
 
-      return new ActivityMainBinding((ConstraintLayout) rootView, courseRecyclerView, fab,
+      return new ActivityMainBinding((ConstraintLayout) rootView, courseRecyclerView, fab, toolbar,
           viewCoursesButton);
     }
     String missingId = rootView.getResources().getResourceName(id);

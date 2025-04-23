@@ -60,22 +60,13 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
-    // Initial insert callback (optional/test data)
     private static final RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db){
             super.onCreate(db);
-            Log.d("DB", "Inserting test data into database");
 
-            databaseWriteExecutor.execute(() -> {
-                CourseDao dao = INSTANCE.courseDao();
-                dao.deleteAll();
 
-                Course course1 = new Course("1234", "Computer Science", "ayo");
-                dao.insert(course1);
-                Course course2 = new Course("32105", "Maths", "Dan");
-                dao.insert(course2);
-            });
+
         }
     };
 }

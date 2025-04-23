@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.widget.TextView;
 import android.util.Log;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import uk.edu.le.Part2.database.AppDatabase;
@@ -39,6 +40,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
         // Init ViewModel and RecyclerView once
         studentViewModel = new ViewModelProvider(this).get(StudentViewModel.class);
         adapter = new CourseListAdapter(new CourseListAdapter.CourseDiff());
+
 
         recyclerView = findViewById(R.id.courseRecyclerView);
         recyclerView.setAdapter(adapter);

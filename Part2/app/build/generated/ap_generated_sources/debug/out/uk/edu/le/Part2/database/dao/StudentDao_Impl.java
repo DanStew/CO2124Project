@@ -348,6 +348,106 @@ public final class StudentDao_Impl implements StudentDao {
   }
 
   @Override
+  public StudentWithCourses getStudentWithCoursesByMatricNum(final String matricNumber) {
+    final String _sql = "SELECT * FROM student WHERE matricNum = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    if (matricNumber == null) {
+      _statement.bindNull(_argIndex);
+    } else {
+      _statement.bindString(_argIndex, matricNumber);
+    }
+    __db.assertNotSuspendingTransaction();
+    __db.beginTransaction();
+    try {
+      final Cursor _cursor = DBUtil.query(__db, _statement, true, null);
+      try {
+        final int _cursorIndexOfStudentId = CursorUtil.getColumnIndexOrThrow(_cursor, "studentId");
+        final int _cursorIndexOfFullName = CursorUtil.getColumnIndexOrThrow(_cursor, "fullName");
+        final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
+        final int _cursorIndexOfMatricNum = CursorUtil.getColumnIndexOrThrow(_cursor, "matricNum");
+        final int _cursorIndexOfUsername = CursorUtil.getColumnIndexOrThrow(_cursor, "username");
+        final LongSparseArray<ArrayList<Course>> _collectionCourses = new LongSparseArray<ArrayList<Course>>();
+        while (_cursor.moveToNext()) {
+          final Long _tmpKey;
+          if (_cursor.isNull(_cursorIndexOfStudentId)) {
+            _tmpKey = null;
+          } else {
+            _tmpKey = _cursor.getLong(_cursorIndexOfStudentId);
+          }
+          if (_tmpKey != null) {
+            if (!_collectionCourses.containsKey(_tmpKey)) {
+              _collectionCourses.put(_tmpKey, new ArrayList<Course>());
+            }
+          }
+        }
+        _cursor.moveToPosition(-1);
+        __fetchRelationshipcourseAsukEduLePart2DatabaseCourse(_collectionCourses);
+        final StudentWithCourses _result;
+        if (_cursor.moveToFirst()) {
+          final Student _tmpStudent;
+          if (!(_cursor.isNull(_cursorIndexOfStudentId) && _cursor.isNull(_cursorIndexOfFullName) && _cursor.isNull(_cursorIndexOfEmail) && _cursor.isNull(_cursorIndexOfMatricNum) && _cursor.isNull(_cursorIndexOfUsername))) {
+            _tmpStudent = new Student();
+            final int _tmpStudentId;
+            _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
+            _tmpStudent.setStudentId(_tmpStudentId);
+            final String _tmpFullName;
+            if (_cursor.isNull(_cursorIndexOfFullName)) {
+              _tmpFullName = null;
+            } else {
+              _tmpFullName = _cursor.getString(_cursorIndexOfFullName);
+            }
+            _tmpStudent.setFullName(_tmpFullName);
+            final String _tmpEmail;
+            if (_cursor.isNull(_cursorIndexOfEmail)) {
+              _tmpEmail = null;
+            } else {
+              _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
+            }
+            _tmpStudent.setEmail(_tmpEmail);
+            final int _tmpMatricNum;
+            _tmpMatricNum = _cursor.getInt(_cursorIndexOfMatricNum);
+            _tmpStudent.setMatricNum(_tmpMatricNum);
+            final String _tmpUsername;
+            if (_cursor.isNull(_cursorIndexOfUsername)) {
+              _tmpUsername = null;
+            } else {
+              _tmpUsername = _cursor.getString(_cursorIndexOfUsername);
+            }
+            _tmpStudent.setUsername(_tmpUsername);
+          } else {
+            _tmpStudent = null;
+          }
+          final ArrayList<Course> _tmpCoursesCollection;
+          final Long _tmpKey_1;
+          if (_cursor.isNull(_cursorIndexOfStudentId)) {
+            _tmpKey_1 = null;
+          } else {
+            _tmpKey_1 = _cursor.getLong(_cursorIndexOfStudentId);
+          }
+          if (_tmpKey_1 != null) {
+            _tmpCoursesCollection = _collectionCourses.get(_tmpKey_1);
+          } else {
+            _tmpCoursesCollection = new ArrayList<Course>();
+          }
+          _result = new StudentWithCourses();
+          _result.setStudent(_tmpStudent);
+          _result.setCourses(_tmpCoursesCollection);
+        } else {
+          _result = null;
+        }
+        __db.setTransactionSuccessful();
+        return _result;
+      } finally {
+        _cursor.close();
+        _statement.release();
+      }
+    } finally {
+      __db.endTransaction();
+    }
+  }
+
+  @Override
   public LiveData<Student> getStudentById(final int studentId) {
     final String _sql = "SELECT * FROM Student WHERE studentId = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
@@ -408,6 +508,118 @@ public final class StudentDao_Impl implements StudentDao {
         _statement.release();
       }
     });
+  }
+
+  @Override
+  public boolean checkMatricExists(final String matricNumber) {
+    final String _sql = "SELECT EXISTS(SELECT 1 FROM student WHERE matricNum = ?)";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    if (matricNumber == null) {
+      _statement.bindNull(_argIndex);
+    } else {
+      _statement.bindString(_argIndex, matricNumber);
+    }
+    __db.assertNotSuspendingTransaction();
+    final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+    try {
+      final boolean _result;
+      if (_cursor.moveToFirst()) {
+        final int _tmp;
+        _tmp = _cursor.getInt(0);
+        _result = _tmp != 0;
+      } else {
+        _result = false;
+      }
+      return _result;
+    } finally {
+      _cursor.close();
+      _statement.release();
+    }
+  }
+
+  @Override
+  public Student getStudentByMatricNumber(final String matricNumber) {
+    final String _sql = "SELECT * FROM Student WHERE matricNum = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    if (matricNumber == null) {
+      _statement.bindNull(_argIndex);
+    } else {
+      _statement.bindString(_argIndex, matricNumber);
+    }
+    __db.assertNotSuspendingTransaction();
+    final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+    try {
+      final int _cursorIndexOfStudentId = CursorUtil.getColumnIndexOrThrow(_cursor, "studentId");
+      final int _cursorIndexOfFullName = CursorUtil.getColumnIndexOrThrow(_cursor, "fullName");
+      final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
+      final int _cursorIndexOfMatricNum = CursorUtil.getColumnIndexOrThrow(_cursor, "matricNum");
+      final int _cursorIndexOfUsername = CursorUtil.getColumnIndexOrThrow(_cursor, "username");
+      final Student _result;
+      if (_cursor.moveToFirst()) {
+        _result = new Student();
+        final int _tmpStudentId;
+        _tmpStudentId = _cursor.getInt(_cursorIndexOfStudentId);
+        _result.setStudentId(_tmpStudentId);
+        final String _tmpFullName;
+        if (_cursor.isNull(_cursorIndexOfFullName)) {
+          _tmpFullName = null;
+        } else {
+          _tmpFullName = _cursor.getString(_cursorIndexOfFullName);
+        }
+        _result.setFullName(_tmpFullName);
+        final String _tmpEmail;
+        if (_cursor.isNull(_cursorIndexOfEmail)) {
+          _tmpEmail = null;
+        } else {
+          _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
+        }
+        _result.setEmail(_tmpEmail);
+        final int _tmpMatricNum;
+        _tmpMatricNum = _cursor.getInt(_cursorIndexOfMatricNum);
+        _result.setMatricNum(_tmpMatricNum);
+        final String _tmpUsername;
+        if (_cursor.isNull(_cursorIndexOfUsername)) {
+          _tmpUsername = null;
+        } else {
+          _tmpUsername = _cursor.getString(_cursorIndexOfUsername);
+        }
+        _result.setUsername(_tmpUsername);
+      } else {
+        _result = null;
+      }
+      return _result;
+    } finally {
+      _cursor.close();
+      _statement.release();
+    }
+  }
+
+  @Override
+  public long getStudentIdByMatricNumber(final String matricNumber) {
+    final String _sql = "SELECT studentId FROM Student WHERE matricNum = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    if (matricNumber == null) {
+      _statement.bindNull(_argIndex);
+    } else {
+      _statement.bindString(_argIndex, matricNumber);
+    }
+    __db.assertNotSuspendingTransaction();
+    final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+    try {
+      final long _result;
+      if (_cursor.moveToFirst()) {
+        _result = _cursor.getLong(0);
+      } else {
+        _result = 0L;
+      }
+      return _result;
+    } finally {
+      _cursor.close();
+      _statement.release();
+    }
   }
 
   @NonNull

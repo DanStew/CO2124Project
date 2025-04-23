@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate started");
 
+
         // initialise view binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -39,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
         // Initialise ViewModel
         courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
         Log.d(TAG, "ViewModel initialised ");
+
+        //set up toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Set up RecyclerView
         RecyclerView recyclerView = findViewById(R.id.courseRecyclerView);
@@ -49,15 +56,26 @@ public class MainActivity extends AppCompatActivity {
         // Observe courses and update RecyclerView
         Button viewCoursesButton = findViewById(R.id.viewCoursesButton);
         recyclerView.setVisibility(View.GONE);
+        AtomicBoolean viewCourse = new AtomicBoolean(false);
 
         viewCoursesButton.setOnClickListener(v -> {
-            recyclerView.setVisibility(View.VISIBLE);
-            courseViewModel.getAllItems().observe(MainActivity.this, courses -> {
-                if (courses != null) {
-                    adapter.submitList(courses);
-                }
-            });
+            boolean currentViewState = viewCourse.get();
+            viewCourse.set(!currentViewState); // Update the state
+
+            if (viewCourse.get()) {
+                recyclerView.setVisibility(View.VISIBLE);
+                courseViewModel.getAllItems().observe(MainActivity.this, courses -> {
+                    if (courses != null) {
+                        adapter.submitList(courses);
+                    }
+                });
+                viewCoursesButton.setText("Close");
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                viewCoursesButton.setText("View Courses");
+            }
         });
+
 
         // Item click to navigate to CourseDetailsActivity
         adapter.setOnItemClickListener(course -> {

@@ -4,10 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import uk.edu.le.Part2.database.Student;
 
 public class CreateCourseActivity extends AppCompatActivity {
 
@@ -24,27 +23,34 @@ public class CreateCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_course);
 
+        // Link UI fields
         editCourseCodeView = findViewById(R.id.edit_course_code);
         editCourseNameView = findViewById(R.id.edit_course_name);
         editLecturerNameView = findViewById(R.id.edit_lecturer_name);
         Button button = findViewById(R.id.button_create);
 
+        // Handle "Create" button click
         button.setOnClickListener(v -> {
-            Student student = new Student("james Arnold", "dskmldg@gmail.com", "jones");
-
             Intent replyIntent = new Intent();
-            String courseCode = editCourseCodeView.getText().toString();
-            String courseName = editCourseNameView.getText().toString();
-            String lecturerName = editLecturerNameView.getText().toString();
 
-            if (courseCode.trim().isEmpty() || courseName.trim().isEmpty() || lecturerName.trim().isEmpty()) {
+            // Extract and trim input values
+            String courseCode = editCourseCodeView.getText().toString().trim();
+            String courseName = editCourseNameView.getText().toString().trim();
+            String lecturerName = editLecturerNameView.getText().toString().trim();
+
+            // Basic validation for empty fields
+            if (courseCode.isEmpty() || courseName.isEmpty() || lecturerName.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED, replyIntent);
-            } else {
-                replyIntent.putExtra(EXTRA_REPLY_CODE, courseCode);
-                replyIntent.putExtra(EXTRA_REPLY_NAME, courseName);
-                replyIntent.putExtra(EXTRA_REPLY_LECTURER, lecturerName);
-                setResult(RESULT_OK, replyIntent);
+                finish();
+                return;
             }
+
+
+            replyIntent.putExtra(EXTRA_REPLY_CODE, courseCode);
+            replyIntent.putExtra(EXTRA_REPLY_NAME, courseName);
+            replyIntent.putExtra(EXTRA_REPLY_LECTURER, lecturerName);
+            setResult(RESULT_OK, replyIntent);
             finish();
         });
     }

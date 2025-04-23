@@ -2,6 +2,7 @@ package uk.edu.le.Part2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -24,13 +25,13 @@ public class AddStudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_student);
-
+        //getting the user input
         editStudentNameView = findViewById(R.id.edit_student_name);
         editStudentEmailView = findViewById(R.id.edit_student_email);
         editStudentMatricView = findViewById(R.id.edit_student_matric);
-        Button button = findViewById(R.id.button_add);
+        Button addStudents = findViewById(R.id.button_add);
 
-        button.setOnClickListener(view -> {
+        addStudents.setOnClickListener(view -> {
 
             Intent replyIntent = new Intent();
             String studentName = editStudentNameView.getText().toString().trim();
@@ -42,6 +43,7 @@ public class AddStudentActivity extends AppCompatActivity {
                 try {
                     matric = Integer.parseInt(studentMatric);
                 } catch (NumberFormatException e) {
+                    Log.e("AddStudentActivity" ,"Matric is not an integer" );
                     matricCheck = true;
                 }
             }
