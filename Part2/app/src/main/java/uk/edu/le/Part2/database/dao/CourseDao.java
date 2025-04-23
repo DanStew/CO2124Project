@@ -29,4 +29,5 @@ public interface CourseDao {
     @Transaction
     @Query("SELECT * FROM course WHERE courseId = :courseId")
     LiveData<CourseWithStudents> getCourseWithStudents(int courseId);
+
 }
